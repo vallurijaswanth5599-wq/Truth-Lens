@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  veritrust:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: veritrust-app
+    ports:
+      - "3001:3001"
+    environment:
+      - API_PORT=3001
+      - TAVILY_API_KEY=${TAVILY_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-3.5-flash}
+    restart: unless-stopped

@@ -1,0 +1,162 @@
+[
+  {
+    "id": "eval-01",
+    "type": "text",
+    "domain": "Health / Medical",
+    "input": "Drinking lemon juice cures stage 4 cancer in 24 hours.",
+    "expectedVerdict": "Do Not Share",
+    "expectedCredibility": 5
+  },
+  {
+    "id": "eval-02",
+    "type": "text",
+    "domain": "Public Health",
+    "input": "The WHO declared COVID-19 no longer a global health emergency in May 2023.",
+    "expectedVerdict": "Safe to Share",
+    "expectedCredibility": 95
+  },
+  {
+    "id": "eval-03",
+    "type": "url",
+    "domain": "Cybersecurity",
+    "input": "http://free-crypto-giveaway-claim-now.xyz/login",
+    "expectedVerdict": "Do Not Share",
+    "expectedCredibility": 10
+  },
+  {
+    "id": "eval-04",
+    "type": "image",
+    "domain": "Image Forensics",
+    "input": "midjourney_v6_portrait.png",
+    "expectedVerdict": "Do Not Share",
+    "expectedCredibility": 10
+  },
+  {
+    "id": "eval-05",
+    "type": "text",
+    "domain": "Politics / Elections",
+    "input": "NASA discovered alien structures on the dark side of the moon.",
+    "expectedVerdict": "Do Not Share",
+    "expectedCredibility": 12
+  },
+  {
+    "id": "eval-06",
+    "type": "text",
+    "domain": "Climate / Environment",
+    "input": "Global mean surface temperatures reached historic highs in 2023 and 2024 according to NASA and NOAA.",
+    "expectedVerdict": "Safe to Share",
+    "expectedCredibility": 94
+  },
+  {
+    "id": "eval-07",
+    "type": "text",
+    "domain": "Economics / Finance",
+    "input": "The Federal Reserve lowered benchmark interest rates by 50 basis points in September 2024.",
+    "expectedVerdict": "Safe to Share",
+    "expectedCredibility": 92
+  },
+  {
+    "id": "eval-08",
+    "type": "url",
+    "domain": "Cybersecurity",
+    "input": "https://www.cdc.gov/flu/season/index.html",
+    "expectedVerdict": "Safe to Share",
+    "expectedCredibility": 96
+  },
+  {
+    "id": "eval-09",
+    "type": "image",
+    "domain": "Image Forensics",
+    "input": "dalle3_celebrity_fake.jpg",
+    "expectedVerdict": "Do Not Share",
+    "expectedCredibility": 14
+  },
+  {
+    "id": "eval-10",
+    "type": "image",
+    "domain": "Image Forensics",
+    "input": "IMG_20240807_1234.jpg",
+    "expectedVerdict": "Safe to Share",
+    "expectedCredibility": 85
+  },
+  {
+    "id": "eval-11",
+    "type": "text",
+    "domain": "AI / Technology",
+    "input": "OpenAI announced GPT-4 in March 2023.",
+    "expectedVerdict": "Safe to Share",
+    "expectedCredibility": 95
+  },
+  {
+    "id": "eval-12",
+    "type": "text",
+    "domain": "Health / Medical",
+    "input": "5G towers cause immediate viral infections.",
+    "expectedVerdict": "Do Not Share",
+    "expectedCredibility": 8
+  },
+  {
+    "id": "eval-13",
+    "type": "url",
+    "domain": "Cybersecurity",
+    "input": "http://192.168.1.1/admin-login-account",
+    "expectedVerdict": "Share with Caution",
+    "expectedCredibility": 40
+  },
+  {
+    "id": "eval-14",
+    "type": "text",
+    "domain": "Public Health",
+    "input": "Mpox was declared a Public Health Emergency of International Concern by the WHO in August 2024.",
+    "expectedVerdict": "Safe to Share",
+    "expectedCredibility": 96
+  },
+  {
+    "id": "eval-15",
+    "type": "text",
+    "domain": "Conflict / National Security",
+    "input": "A nuclear explosion occurred in downtown Manhattan today.",
+    "expectedVerdict": "Do Not Share",
+    "expectedCredibility": 5
+  },
+  {
+    "id": "eval-16",
+    "type": "text",
+    "domain": "Economics / Finance",
+    "input": "Bitcoin surpassed $100,000 for the first time in December 2024.",
+    "expectedVerdict": "Safe to Share",
+    "expectedCredibility": 92
+  },
+  {
+    "id": "eval-17",
+    "type": "text",
+    "domain": "General Information",
+    "input": "The James Webb Space Telescope launched in December 2021.",
+    "expectedVerdict": "Safe to Share",
+    "expectedCredibility": 98
+  },
+  {
+    "id": "eval-18",
+    "type": "text",
+    "domain": "Health / Medical",
+    "input": "Eating raw garlic completely eliminates diabetes.",
+    "expectedVerdict": "Do Not Share",
+    "expectedCredibility": 15
+  },
+  {
+    "id": "eval-19",
+    "type": "url",
+    "domain": "Cybersecurity",
+    "input": "https://www.reuters.com/world/",
+    "expectedVerdict": "Safe to Share",
+    "expectedCredibility": 95
+  },
+  {
+    "id": "eval-20",
+    "type": "image",
+    "domain": "Image Forensics",
+    "input": "photoshop_edited_meme.jpg",
+    "expectedVerdict": "Do Not Share",
+    "expectedCredibility": 15
+  }
+]
