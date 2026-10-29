@@ -1,8 +1,11 @@
 """
-VeriTrust FastAPI Backend Application Entrypoint
+TruthLens FastAPI Backend Application Entrypoint
 """
 import sys
 import time
+import json
+import uuid
+import asyncio
 from pathlib import Path
 
 # Ensure backend directory is in sys.path for robust relative/absolute imports
@@ -13,9 +16,6 @@ if str(backend_dir) not in sys.path:
 from fastapi import FastAPI, Request
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
-import json
-import uuid
-import asyncio
 from app.core.config import settings
 from app.api.v1.api import api_router
 from app.db.session import engine, Base
@@ -26,13 +26,6 @@ from app.services.gemini_service import analyze_with_gemini, extract_visual_cont
 from app.services.forensics_service import analyze_media_forensics
 from app.services.url_service import audit_url_reputation
 from app.services.report_service import build_report
-
-# Create tables on startup safely
-try:
-    Base.metadata.create_all(bind=engine)
-except Exception as err:
-    print(f"[VeriTrust Warning] Database table creation fallback: {err}")
-
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -53,6 +46,12 @@ app.add_middleware(
 
 # Include API router
 app.include_router(api_router, prefix=settings.API_V1_STR)
+
+# Create tables on startup safely
+try:
+    Base.metadata.create_all(bind=engine)
+except Exception as err:
+    print(f"[TruthLens Warning] Database table creation fallback: {err}")
 
 @app.get("/")
 def root():
@@ -95,28 +94,71 @@ async def verify_streaming_handler(request: Request):
     async def sse_generator():
         req_id = f"vt-{uuid.uuid4().hex[:8]}"
         start_time = time.time()
+        time_str = time.strftime("%H:%M:%S")
 
-        yield f"data: {json.dumps({'type': 'progress', 'stage': 0, 'name': 'Claim Extraction', 'desc': 'Extracting and decomposing claims...', 'logs': [f'[{time.strftime(\"%H:%M:%S\")}] Request ID: {req_id}']})}\n\n"
+        p0 = {
+            "type": "progress",
+            "stage": 0,
+            "name": "Claim Extraction",
+            "desc": "Extracting and decomposing claims...",
+            "logs": [f"[{time_str}] Request ID: {req_id}"]
+        }
+        yield f"data: {json.dumps(p0)}\n\n"
         await asyncio.sleep(0.05)
 
         visual_ctx = None
         if file_data and (input_type == "image" or "data:image" in str(file_data)):
-            yield f"data: {json.dumps({'type': 'progress', 'stage': 0, 'name': 'Gemini Vision Pre-pass', 'desc': 'Extracting visual description, OCR, and keywords...', 'logs': ['Analyzing image with Gemini Vision']})}\n\n"
+            p_vis = {
+                "type": "progress",
+                "stage": 0,
+                "name": "Gemini Vision Pre-pass",
+                "desc": "Extracting visual description, OCR, and keywords...",
+                "logs": ["Analyzing image with Gemini Vision"]
+            }
+            yield f"data: {json.dumps(p_vis)}\n\n"
             visual_ctx = await extract_visual_context(file_data, file_meta)
 
         claim, queries, domain, is_high_impact = extract_claims(content, input_type, file_meta, visual_ctx)
 
-        yield f"data: {json.dumps({'type': 'progress', 'stage': 1, 'name': 'Search Planning', 'desc': f'Generated {len(queries)} search queries...', 'logs': [f'Queries: {queries}']})}\n\n"
+        p1 = {
+            "type": "progress",
+            "stage": 1,
+            "name": "Search Planning",
+            "desc": f"Generated {len(queries)} search queries...",
+            "logs": [f"Queries: {queries}"]
+        }
+        yield f"data: {json.dumps(p1)}\n\n"
         await asyncio.sleep(0.05)
 
-        yield f"data: {json.dumps({'type': 'progress', 'stage': 2, 'name': 'Web Retrieval', 'desc': 'Querying live sources via Tavily & fallbacks...', 'logs': ['Executing parallel searches']})}\n\n"
+        p2 = {
+            "type": "progress",
+            "stage": 2,
+            "name": "Web Retrieval",
+            "desc": "Querying live sources via Tavily & fallbacks...",
+            "logs": ["Executing parallel searches"]
+        }
+        yield f"data: {json.dumps(p2)}\n\n"
         raw_results, tavily_ans = await search_claim(queries)
 
-        yield f"data: {json.dumps({'type': 'progress', 'stage': 3, 'name': 'Domain Trust Evaluation', 'desc': f'Evaluating {len(raw_results)} sources across 300+ domain trust tiers...', 'logs': ['Filtering sources by domain reputation']})}\n\n"
+        p3 = {
+            "type": "progress",
+            "stage": 3,
+            "name": "Domain Trust Evaluation",
+            "desc": f"Evaluating {len(raw_results)} sources across 300+ domain trust tiers...",
+            "logs": ["Filtering sources by domain reputation"]
+        }
+        yield f"data: {json.dumps(p3)}\n\n"
         trusted_sources = score_and_filter_sources(raw_results, claim)
         source_agreement = compute_source_agreement(trusted_sources, claim)
 
-        yield f"data: {json.dumps({'type': 'progress', 'stage': 4, 'name': 'Gemini AI Evidence Reasoning', 'desc': 'Reasoning strictly over retrieved evidence...', 'logs': ['Evidence-grounded claim reasoning active']})}\n\n"
+        p4 = {
+            "type": "progress",
+            "stage": 4,
+            "name": "Gemini AI Evidence Reasoning",
+            "desc": "Reasoning strictly over retrieved evidence...",
+            "logs": ["Evidence-grounded claim reasoning active"]
+        }
+        yield f"data: {json.dumps(p4)}\n\n"
         extras = {
             "tavily_answer": tavily_ans,
             "source_agreement": source_agreement,
@@ -127,7 +169,14 @@ async def verify_streaming_handler(request: Request):
 
         forensics = None
         if input_type in ["image", "video", "audio", "document"]:
-            yield f"data: {json.dumps({'type': 'progress', 'stage': 5, 'name': 'Media Forensics', 'desc': 'Inspecting digital watermarks, EXIF metadata, and ELA signals...', 'logs': ['Analyzing forensic markers']})}\n\n"
+            p5 = {
+                "type": "progress",
+                "stage": 5,
+                "name": "Media Forensics",
+                "desc": "Inspecting digital watermarks, EXIF metadata, and ELA signals...",
+                "logs": ["Analyzing forensic markers"]
+            }
+            yield f"data: {json.dumps(p5)}\n\n"
             forensics = analyze_media_forensics(input_type, file_meta, content, claim, analysis, file_data)
 
         url_metrics = None
@@ -146,7 +195,14 @@ async def verify_streaming_handler(request: Request):
             url_metrics=url_metrics
         )
 
-        yield f"data: {json.dumps({'type': 'progress', 'stage': 6, 'name': 'Report Assembly', 'desc': 'Finalizing executive verification scorecard...', 'logs': ['Report complete']})}\n\n"
+        p6 = {
+            "type": "progress",
+            "stage": 6,
+            "name": "Report Assembly",
+            "desc": "Finalizing executive verification scorecard...",
+            "logs": ["Report complete"]
+        }
+        yield f"data: {json.dumps(p6)}\n\n"
         yield f"data: {json.dumps({'type': 'complete', 'report': report})}\n\n"
 
     return StreamingResponse(
@@ -162,4 +218,3 @@ async def verify_streaming_handler(request: Request):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
-
